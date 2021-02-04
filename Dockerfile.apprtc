@@ -31,4 +31,4 @@ FROM gcr.io/google.com/cloudsdktool/cloud-sdk:326.0.0
 COPY --from=builder /app/out/app_engine /app/
 
 # Start it using dev appserver provided by the Google app engine SDK
-CMD dev_appserver.py /app
+CMD dev_appserver.py --host=0.0.0.0 --log_level=debug --dev_appserver_log_level=debug /app
