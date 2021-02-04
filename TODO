@@ -1,0 +1,11 @@
+- To get it running for now:
+  docker run -p 8089:8089 -it collider
+  docker run -p 8080:8080 -p 8000:8000 -it apprtc
+
+  Surf to: http://localhost:8080/?wstls=false
+
+- Is the dev server good enough for us?
+    - Can it be made secure enough?
+    - Is it able to store stuff? It doesn't have a datastore? Though things seem to persist for now, even between docker restarts. Where is this stored?
+
+- Get STUN / TURN working (currently will only work when peers are on same network)
