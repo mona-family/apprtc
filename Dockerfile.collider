@@ -1,0 +1,21 @@
+FROM golang:1.15-buster AS builder
+
+RUN mkdir /app
+ADD ./src/collider /collider/
+
+ENV GOPATH=/
+RUN mkdir -p $GOPATH/src
+
+RUN ln -s /collider/collider $GOPATH/src
+RUN ln -s /collider/collidermain $GOPATH/src
+RUN ln -s /collider/collidertest $GOPATH/src
+
+RUN go get collidermain
+RUN go install collidermain
+
+# This is where the actual Docker that will run our code starts
+
+FROM busybox:glibc
+COPY --from=builder /bin/collidermain /bin/collidermain
+
+CMD /bin/collidermain -port 8089 -room-server http://lvh.me -tls=false
