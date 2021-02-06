@@ -4,8 +4,95 @@
 
   Surf to: http://localhost:8080/?wstls=false
 
+
+
+NOW
+
+- Investigate if collider alone can be enough. Can we write a simple WebRTC client that uses collider as
+    our signaling backend? Without running any of the AppRTC code?
+
+    The Mona app currently uses the following parameters from the response:
+      - wss_url -> hardcode
+      - wss_post_url -> hardcode
+      - clientId -> can we do this via firebase ? I think so, right? We can just use some identifier that
+          we already have?
+      - is_initiator -> can we do this via firebase ? i.e. specify who initiated the room or call?
+          How is this determined? Is it whoever enters the room first, or... ?
+          More of a business logic question I think.
+      - messages -> this seems to queue messages if other client hasn't arrived yet before forwarding them
+          to collider. However, collider seems to have similar functionality, so I think we can just use that
+          and ignore the returned value.
+
+
+
+
 - Is the dev server good enough for us?
-    - Can it be made secure enough?
-    - Is it able to store stuff? It doesn't have a datastore? Though things seem to persist for now, even between docker restarts. Where is this stored?
+  - Storage:
+    - Recent rooms are stored in the client (and probably irrelevant for our usecase anyway)
+        so it's logical that these persist through docker restarts
+    => OK
+
+- Or should we move to running it on google app engine anyway?
+  - This probably simplifies stuff like the analytics etc.
+
+  - Can we do authentication then? Is it possible to put our own reverse proxy in front of it?
+      Or can we just implement our own auth mechanism by modifying the Python code?
+
+  - Google AppEngine auto privisions an SSL certificate, though if we want a reverse proxy in front of it, we may
+      have to redo that part ourselves since the proxy will have to serve the certificate.
+
+
+- Maybe just running collider could be sufficient for us? We can generate room IDs in our Firebase database
+    and use collider to do the signaling?
+      - It seems to only reference the room server once: to send a "bye" post when we leave the room.
+        This can easily be removed.
+      => This would hugely simplify things
+      => For test setups, we can still run a (local) AppRTC server that points to the same signaling server
+          to, for example, join the room from a web browser
+
+
+TO DECIDE SOON:
+  - Do we need to have multiple participants in a room? If yes:
+    - Are we fine with Meshing in case of multiple participants in a room?
+        https://webrtcglossary.com/mesh/
+      Note: it seems like this is mostly a client thing? Not sure yet though...
+
+  - Why not to use AppRTC:
+      https://bloggeek.me/webrtc-signaling-server-not-use-apprtc/
+      Basically:
+        - Not maintained
+        - Lots of functionality missing that we need to add ourselves
+      Alternatives to look into:
+        - SaltyRTC
+
+  - For media relaying: coturn seems the standard. I think we use it at ONE Smart Control too.
+
+  - What other WebRTC sigaling server can we use?
+      - I've seen some people just suggest Firebase
+        See: https://webrtc.org/getting-started/firebase-rtc-codelab
+
+
+
+NEXT
+
+- Get rid of "max 2 people in room" limit
+  => This really seems "built in"
+
+
+- Can we get the analytics to work?
+    - See README.md, you'll have to run a bootstrap (manually?)
+
+- Is the dev server good enough for us?
+  - Can it be made secure enough?
+      - Add reverse proxy for TLS
+      - Add reverse nginx proxy for authentication. Does this work with the whole websocket stuff?
+          The reverse nginx proxy then calls to a python web server to check the authentication against
+          our database.
+
+- Would probably be easiest to set this up on a Kubernetes cluster because we can then
+    rely on existing things (cert-manager for TLS, nginx ingress, ...)
+
+    Alternatively, we could use a docker stack, but I really prefer kubernetes and think I can get it set up
+      quicker. To check with Klaas.
 
 - Get STUN / TURN working (currently will only work when peers are on same network)
