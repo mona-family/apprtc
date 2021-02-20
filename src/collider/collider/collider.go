@@ -30,12 +30,14 @@ const wsReadTimeoutSec = 60 * 60 * 24
 type Collider struct {
 	*roomTable
 	dash *dashboard
+	fb *firebase
 }
 
 func NewCollider(rs string) *Collider {
 	return &Collider{
 		roomTable: newRoomTable(time.Second*registerTimeoutSec, rs),
 		dash:      newDashboard(),
+		fb: newFirebase(),
 	}
 }
 
@@ -148,6 +150,10 @@ func (c *Collider) wsHandler(ws *websocket.Conn) {
 	registered := false
 
 	var msg wsClientMsg
+
+	log.Printf("Firebase gogo!")
+	c.fb.logCallStart()
+
 loop:
 	for {
 		err := ws.SetReadDeadline(time.Now().Add(time.Duration(wsReadTimeoutSec) * time.Second))
