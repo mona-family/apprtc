@@ -23,9 +23,9 @@ import (
 
 const registerTimeoutSec = 10
 
-// This is a temporary solution to avoid holding a zombie connection forever, by
-// setting a 1 day timeout on reading from the WebSocket connection.
-const wsReadTimeoutSec = 60 * 60 * 24
+// The client will send a ping every 10 seconds. If we don't receive one after 6 times that interval, we time out
+// the connection on our side
+const wsReadTimeoutSec = 10 * 6
 
 type Collider struct {
 	*roomTable
@@ -193,6 +193,9 @@ loop:
 				break loop
 			}
 			c.roomTable.send(rid, cid, msg.Msg)
+			break
+		case "ping":
+			// Simple keepalive mechanism to avoid a dead TCP connection
 			break
 		default:
 			c.wsError("Invalid message: unexpected 'cmd'", ws)
