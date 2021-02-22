@@ -1,4 +1,4 @@
-FROM golang:1.15-buster AS builder
+FROM golang:1.16-alpine3.12 AS builder
 
 RUN mkdir /app
 ADD ./src/collider /collider/
@@ -10,7 +10,7 @@ RUN go build -o build/collider
 
 # This is where the actual Docker that will run our code starts
 
-FROM busybox:glibc
+FROM alpine:3.12
 COPY --from=builder /collider/build/collider /bin/collider
 
 CMD /bin/collider -port 8089 -room-server http://lvh.me -tls=false
