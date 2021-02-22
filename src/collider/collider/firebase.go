@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"google.golang.org/api/option"
 	"log"
+	"os"
 )
 
 func newFirebase() *firebase.App {
@@ -14,7 +15,7 @@ func newFirebase() *firebase.App {
 		DatabaseURL: "https://mona-44092-default-rtdb.europe-west1.firebasedatabase.app",
 	}
 	// Fetch the service account key JSON file contents
-	opt := option.WithCredentialsFile("/home/niels/dev/mona/apprtc/src/collider/service_account.json")
+	opt := option.WithCredentialsFile(os.Getenv("FIREBASE_SERVICE_ACCOUNT_FILE"))
 
 	// Initialize the app with a service account, granting admin privileges
 	app, err := firebase.NewApp(ctx, conf, opt)
