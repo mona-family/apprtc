@@ -6,7 +6,7 @@
 package collider
 
 import (
-	"collidertest"
+	"mona.family/collider/collidertest"
 	"testing"
 )
 

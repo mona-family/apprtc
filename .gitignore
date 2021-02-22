@@ -13,3 +13,4 @@ source-context*.json
 temp/*
 validation-report.json
 validation-status.json
+service_account.json

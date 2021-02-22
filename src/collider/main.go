@@ -6,9 +6,9 @@
 package main
 
 import (
-	"collider"
 	"flag"
 	"log"
+	"mona.family/collider/collider"
 )
 
 var tls = flag.Bool("tls", true, "whether TLS is used")

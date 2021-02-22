@@ -8,6 +8,7 @@ package collider
 
 import (
 	"crypto/tls"
+	firebase "firebase.google.com/go/v4"
 	"golang.org/x/net/websocket"
 	"encoding/json"
 	"errors"
@@ -30,7 +31,7 @@ const wsReadTimeoutSec = 10 * 6
 type Collider struct {
 	*roomTable
 	dash *dashboard
-	fb *firebase
+	fb *firebase.App
 }
 
 func NewCollider(rs string) *Collider {
@@ -152,7 +153,7 @@ func (c *Collider) wsHandler(ws *websocket.Conn) {
 	var msg wsClientMsg
 
 	log.Printf("Firebase gogo!")
-	c.fb.logCallStart()
+	//c.fb.logCallStart()
 
 loop:
 	for {
