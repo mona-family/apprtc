@@ -24,9 +24,9 @@ import (
 
 const registerTimeoutSec = 10
 
-// The client will send a ping every 10 seconds. If we don't receive one after 6 times that interval, we time out
+// The client will send a ping every 30 seconds. If we don't receive one after 5 times that interval, we time out
 // the connection on our side
-const wsReadTimeoutSec = 10 * 6
+const wsReadTimeoutSec = 30 * 5
 
 type Collider struct {
 	*roomTable
