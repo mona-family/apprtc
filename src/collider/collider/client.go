@@ -40,8 +40,9 @@ func (c *client) setTimer(t *time.Timer) {
 // register binds the ReadWriteCloser to the client if it's not done yet.
 func (c *client) register(rwc io.ReadWriteCloser) error {
 	if c.rwc != nil {
-		log.Printf("Not registering because the client %s already has a connection", c.id)
-		return errors.New("Duplicated registration")
+		log.Printf("Client %s already has a connection. Replacing it.", c.id)
+		c.rwc.Close()
+		// return errors.New("Duplicated registration")
 	}
 	c.setTimer(nil)
 	c.rwc = rwc
